@@ -1,0 +1,128 @@
+openapi: "3.0.0"
+info:
+  title: Web store demo
+  version: 1.0.4
+servers:
+  - url: "http://localhost:8080"
+    description: "Development server"
+paths:
+  /api/v1/products:
+    get:
+      summary: "Products"
+      description: "Get list of products that can be sold"
+      operationId: "getProducts"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductList"
+        '404':
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: "Products"
+      description: "Add a new product(s) to the store"
+      operationId: "addProducts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductList"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductList"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/v1/sales:
+    post:
+      summary: "Sales"
+      description: "Add a new sale to the store"
+      operationId: "sale"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Sale"
+
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sale"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    ProductList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Product"
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+      required:
+        - id
+        - name
+        - price
+    ProductSale:
+      type: object
+      properties:
+        id:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+        total:
+          type: string
+        discount:
+          type: string
+      required:
+        - id
+        - quantity
+    Sale:
+      type: object
+      properties:
+        discount:
+          type: string
+        ProductSale:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductSale"
+        total:
+          type: string
+      required:
+        - discount
+        - ProductSale
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
