@@ -6,12 +6,12 @@ import (
 )
 
 const (
-	StoreTypeMemory = "memory"
+	Memory = "memory"
 )
 
 func New(storeType string) types.Store {
 	switch storeType {
-	case StoreTypeMemory:
+	case Memory:
 		return memory.NewStore()
 	default:
 		return nil

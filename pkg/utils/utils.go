@@ -9,3 +9,7 @@ func Index[T any](arr []T, f func(T) bool) int {
 
 	return -1
 }
+
+func Ptr[T any](t T) *T {
+	return &t
+}

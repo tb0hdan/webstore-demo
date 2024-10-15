@@ -6,6 +6,7 @@ import (
 
 	"webstore-demo/internal/server/api"
 	"webstore-demo/pkg/types"
+	"webstore-demo/pkg/utils"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
@@ -34,9 +35,7 @@ func (w *WebStoreServer) AddProducts(ctx echo.Context) error {
 	if err := ctx.Bind(&req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, "Bad Request")
 	}
-	if ctx.Request().Header.Get("Content-Type") != "application/json" {
-		return ctx.JSON(http.StatusBadRequest, "Missing Content-Type header")
-	}
+
 	if err := w.store.AddProduct(req); err != nil {
 		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -53,9 +52,7 @@ func (w *WebStoreServer) Sale(ctx echo.Context) error {
 	if err := ctx.Bind(&req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, errors.Wrap(err, "Bad Request"))
 	}
-	if ctx.Request().Header.Get("Content-Type") != "application/json" {
-		return ctx.JSON(http.StatusBadRequest, "Missing Content-Type header")
-	}
+
 	if err := w.store.AddSale(req); err != nil {
 		return ctx.JSON(http.StatusInternalServerError, errors.Wrap(err, "Internal Server Error"))
 	}
@@ -107,7 +104,7 @@ func (w *WebStoreServer) Sale(ctx echo.Context) error {
 		sales = append(sales, api.ProductSale{ // nolint: exhaustruct
 			Id:       lineItem.Id,
 			Total:    &total,
-			Discount: types.Ptr(fmt.Sprint(discountPerLine)),
+			Discount: utils.Ptr(fmt.Sprint(discountPerLine)),
 		})
 		salesTotal = salesTotal.Add(decimal.RequireFromString(total))
 	}
